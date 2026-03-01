@@ -108,12 +108,6 @@ export default async function handler(req, res) {
       const baseURLTag = `<BaseURL>${proxyPrefix}</BaseURL>\n`;
       manifestText = manifestText.replace(/<MPD[^>]*>/i, (match) => match + '\n  ' + baseURLTag);
 
-      // If DRM info is present, add it to the manifest metadata as a comment
-      if (drmScheme && drmLicense) {
-        const drmComment = `<!-- DRM: ${drmScheme} | License: ${drmLicense} -->\n`;
-        manifestText = drmComment + manifestText;
-      }
-
       return res.status(200).send(manifestText);
     } 
     
