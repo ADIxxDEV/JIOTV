@@ -12,10 +12,16 @@ export default async function handler(req, res) {
 
   try {
     // Parse URL to extract embedded parameters like User-Agent, DRM, etc.
-    let userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36';
+    const DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36';
+    let userAgent = DEFAULT_USER_AGENT;
     let drmScheme = null;
     let drmLicense = null;
     let cleanUrl = targetUrl;
+
+    // Check for User-Agent in query parameters (from proxy-generated URLs)
+    if (req.query['User-Agent']) {
+      userAgent = req.query['User-Agent'];
+    }
 
     // Check if URL contains pipe separator (|) for additional parameters
     if (targetUrl.includes('|') || targetUrl.includes('%7C')) {
@@ -91,8 +97,8 @@ export default async function handler(req, res) {
       
       // Build the proxy URL with all parameters preserved
       let proxyParams = `url=${encodeURIComponent(baseUrl)}`;
-      if (userAgent !== 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36') {
-        proxyParams += `&userAgent=${encodeURIComponent(userAgent)}`;
+      if (userAgent !== DEFAULT_USER_AGENT) {
+        proxyParams += `&User-Agent=${encodeURIComponent(userAgent)}`;
       }
       
       const proxyPrefix = `${protocol}://${host}/api/proxy?${proxyParams}`;
