@@ -29,15 +29,12 @@ export default async function handler(req, res) {
       if (additionalParams.has('User-Agent')) {
         userAgent = additionalParams.get('User-Agent');
       }
-    }
-
-    // Check for DRM parameters in the URL query string
-    const urlObj = new URL(cleanUrl);
-    if (urlObj.searchParams.has('drmScheme')) {
-      drmScheme = urlObj.searchParams.get('drmScheme');
-    }
-    if (urlObj.searchParams.has('drmLicense')) {
-      drmLicense = urlObj.searchParams.get('drmLicense');
+      if (additionalParams.has('drmScheme')) {
+        drmScheme = additionalParams.get('drmScheme');
+      }
+      if (additionalParams.has('drmLicense')) {
+        drmLicense = additionalParams.get('drmLicense');
+      }
     }
 
     // 3. Fetch the resource from the German/Japanese server
